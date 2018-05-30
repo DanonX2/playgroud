@@ -11,20 +11,50 @@ size =  (   1500,  1000)
 running = True
 x = size[0]/2
 y = size[1]/2
-'''
+
 def touching(obj1,obj2):
-    if obj1.x >= obj2.x '''
+    if (obj2.x+obj2.Length>=obj1.x>=obj2.x and obj2.y+obj2.weith>=obj1.y>=obj2.y): 
+        return True
+    elif (obj2.x+obj2.Length>=obj1.x+obj1.Length>=obj2.x and obj2.y+obj2.weith>=obj1.y>=obj2.y):
+        return True
+    elif (obj2.x+obj2.Length>=obj1.x>=obj2.x and obj2.y+obj2.weith>=obj1.y+obj1.weith>=obj2.y):
+        return True
+    elif (obj2.x+obj2.Length>=obj1.x+obj1.Length>=obj2.x and obj2.y+obj2.weith>=obj1.y+obj1.weith>=obj2.y):
+        return True
+    else:return False
 class food:
     def __init__(self):
         self.x = random.randint(0,(size[0]-100))
         self.y = random.randint(0,(size[1]-100))
         self.Length = 100
         self.weith = 100
+        self.exsit = True
     def generate(self):
-        pygame.draw.rect(screen, RED, [self.x, self.y, self.Length, self.weith])
+        if self.exsit:
+            pygame.draw.rect(screen, RED, [self.x, self.y, self.Length, self.weith])
+            self.exsit = True
+        else:pass
+    def update():
+        pass
 class organism:
-    pass
+    def __init__(self):
+        self.x = random.randint(0,(size[0]-100))
+        self.y = random.randint(0,(size[1]-100))
+        self.Length = 100
+        self.weith = 100
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[K_UP]:
+            self.y += -5
+        elif keys[K_DOWN]:
+            self.y += 5
+        elif keys[K_LEFT]:
+            self.x += -5
+        elif keys[K_RIGHT]:
+            self.x += 5
+        pygame.draw.rect(screen, BLACK, [self.x, self.y, self.Length, self.weith])
 food1 = food()
+o1 = organism()
 def main():
     food1.generate()
 pygame.init()
@@ -39,6 +69,9 @@ while running:
             running = False
     screen.fill(WHITE)
     main()
+    o1.update()
+    if touching(o1,food1):
+        food1.exsit = False
     pygame.display.flip()
     clock.tick(144)
 pygame.quit()
