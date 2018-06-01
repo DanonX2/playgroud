@@ -34,8 +34,8 @@ class food:
     def __init__(self):
         self.x = random.randint(0,(size[0]-100))
         self.y = random.randint(0,(size[1]-100))
-        self.Length = 100
-        self.weith = 100
+        self.Length = 50
+        self.weith = 50
         self.exsit = True
     def generate(self):
         if self.exsit:
@@ -47,23 +47,23 @@ class food:
             food1.exsit = False
 class organism:
     def __init__(self):
-        self.x = random.randint(0,(size[0]-100))
-        self.y = random.randint(0,(size[1]-100))
-        self.Length = 100
-        self.weith = 100
+        self.x = 0
+        self.y = 0
+        self.Length = 50
+        self.weith = 50
         self.hunger = 0
     def update(self):
-        self.hunger += 1
+        self.hunger += 0.01
         if self.hunger < 100:
             keys = pygame.key.get_pressed()
             if keys[K_UP]:
-                self.y += -5
+                self.y += -100
             elif keys[K_DOWN]:
-                self.y += 5
+                self.y += 100
             elif keys[K_LEFT]:
-                self.x += -5
+                self.x += -100
             elif keys[K_RIGHT]:
-                self.x += 5
+                self.x += 100
             pygame.draw.rect(screen, BLACK, [self.x, self.y, self.Length, self.weith])
         else:pass
 
