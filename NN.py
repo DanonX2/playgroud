@@ -9,3 +9,4 @@ class neuron:
         for i in self.inputl:
             self.output = self.output + i*self.weight + self.bais
         return self.output
+        
