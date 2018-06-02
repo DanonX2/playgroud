@@ -45,5 +45,7 @@ class neuralnetwork:
 
 INPUT = inputdatalayer([1])
 nn1 = neuralnetwork(INPUT)
+nn1.buildlayer()
+nn1.layer[1].buildneuron()
 ansewr = 100
 print(nn1.run())
