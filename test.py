@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import random
+import NN
 BLACK = (   0,   0,   0)
 WHITE = ( 255, 255, 255)
 GREEN = (   0, 255,   0)
@@ -18,7 +19,15 @@ def touching(obj1,obj2):
     elif (obj2.x+obj2.Length>=obj1.x+obj1.Length>=obj2.x and obj2.y+obj2.weith>=obj1.y+obj1.weith>=obj2.y):
         return True
     else:return False
-
+def tile(x,y):
+    x *= 100
+    y *= 100
+    if screen.get_at((x, y))[0:3] == WHITE:
+        return 0
+    elif screen.get_at((x, y))[0:3] == BLACK:
+        return 1
+    elif screen.get_at((x, y))[0:3] == RED:
+        return 2
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Playground")
 pygame.mouse.set_visible(1)
@@ -32,8 +41,8 @@ class world:
 WORLD = world()        
 class food:
     def __init__(self):
-        self.x = random.randint(0,(size[0]-100))
-        self.y = random.randint(0,(size[1]-100))
+        self.x = random.randint(0,15)*100
+        self.y = random.randint(0,10)*100
         self.Length = 50
         self.weith = 50
         self.exsit = True
@@ -52,6 +61,7 @@ class organism:
         self.Length = 50
         self.weith = 50
         self.hunger = 0
+        self.vision = [None for x in range(0,150)]
     def update(self):
         self.hunger += 0.01
         if self.hunger < 100:
@@ -66,7 +76,9 @@ class organism:
                 self.x += 100
             pygame.draw.rect(screen, BLACK, [self.x, self.y, self.Length, self.weith])
         else:pass
-
+        for x in range(0,15):
+            for y in range(0,10):
+                self.vision[10*x+y] = tile(x,y)
 food1 = food()
 o1 = organism()
 pygame.init()
@@ -84,5 +96,6 @@ while running:
     hungerness = myfont.render(('Hunger:'+ str(o1.hunger)), False, (0, 0, 0))
     screen.blit(hungerness,(0,0)) 
     pygame.display.update()
-    clock.tick(144)   
+    clock.tick(144)
+print(o1.vision)   
 pygame.quit()
