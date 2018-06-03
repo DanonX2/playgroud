@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 import random
-import NN
+from NN import *
 BLACK = (   0,   0,   0)
 WHITE = ( 255, 255, 255)
 GREEN = (   0, 255,   0)
@@ -9,6 +9,7 @@ RED   = ( 255,   0,   0)
 BLUE  = (   0,   0, 255)
 size =  (   1500,  1000)
 running = True
+
 def touching(obj1,obj2):
     if (obj2.x+obj2.Length>=obj1.x>=obj2.x and obj2.y+obj2.weith>=obj1.y>=obj2.y): 
         return True
@@ -52,8 +53,16 @@ class food:
             self.exsit = True
         else:pass
     def update(self):
-        if touching(o1,food1):
-            food1.exsit = False
+        for i in os:
+            if touching(i,food1):
+                food1.exsit = False
+def evlution(layer,neuron):
+    o = organism()
+    o.update()
+    o.brain.buildlayer(layer)
+    for i in range(2,layer+2):
+        o.brain.layer[i].buildneuron(neuron)
+    return o
 class organism:
     def __init__(self):
         self.x = 0
@@ -61,41 +70,49 @@ class organism:
         self.Length = 50
         self.weith = 50
         self.hunger = 0
-        self.vision = [None for x in range(0,150)]
+        self.vision = [0 for x in range(0,150)]
+        self.life = 0
+        self.brain = neuralnetwork(self.vision)
+        self.brain.layer[1].buildneuron(3)
     def update(self):
-        self.hunger += 0.01
+        self.hunger += 5
         if self.hunger < 100:
-            keys = pygame.key.get_pressed()
-            if keys[K_UP]:
-                self.y += -100
-            elif keys[K_DOWN]:
-                self.y += 100
-            elif keys[K_LEFT]:
-                self.x += -100
-            elif keys[K_RIGHT]:
-                self.x += 100
             pygame.draw.rect(screen, BLACK, [self.x, self.y, self.Length, self.weith])
+            self.life += 1
         else:pass
         for x in range(0,15):
             for y in range(0,10):
                 self.vision[10*x+y] = tile(x,y)
+        self.brain.run()
+        self.output = self.brain.layer[1].forward()
+        if self.output[0]==0:
+            self.x += 100
+        elif self.output[1]==0:
+            self.x += -100
+        elif self.output[2]==0:
+            self.y += 100
+        elif self.output[3]==0:
+            self.y += -100
+
+     
 food1 = food()
-o1 = organism()
 pygame.init()
-pygame.font.init()
-myfont = pygame.font.SysFont('Comic Sans MS', 30)
+
+
+os = [evlution(500,500) for i in range(5)]
 while running:
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+    for i in os:
+        if touching(i,food1):
+            i.life += 100
     screen.fill(WHITE)
     WORLD.update()
     food1.generate()
     food1.update()
-    o1.update()
-    hungerness = myfont.render(('Hunger:'+ str(o1.hunger)), False, (0, 0, 0))
-    screen.blit(hungerness,(0,0)) 
+    for i in os:
+        i.update()
     pygame.display.update()
-    clock.tick(144)
-print(o1.vision)   
+    clock.tick(1)
 pygame.quit()
